@@ -4,7 +4,6 @@ import random
 class TicTacToe:
     def __init__(self):
         # TODO: Set up the board to be '-'
-
         self.board = []
         self.columns = 3
         self.rows = 3
@@ -18,9 +17,9 @@ class TicTacToe:
 
     def print_instructions(self):
         # TODO: Print the instructions to the game
-        print("Rules of Tic Tac Toe: You play as either X or O on an 3 by 3 board 2) \
-        to win, you must create a diagonal, horizontal, or vertical line of 3 3) the game ends when all 9 boxes are filled. ")
-        return
+        print("Rules of Tic Tac Toe: You play as either X or O on an 3 by 3 board")
+        print("2)  to win, you must create a diagonal, horizontal, or vertical line of 3")
+        print("3) the game ends when all 9 boxes are filled.")
 
     def print_board(self):
         # TODO: Print the board
@@ -37,29 +36,43 @@ class TicTacToe:
 
     def place_player(self, player, row, col):
         # TODO: Place the player on the board
-        if(player == 0):
+        if (player == 0):
             self.board[row][col] = 'X'
 
         if (player == 1):
             self.board[row][col] = 'O'
+        if (player == '-'):
+            self.board[row][col] = '-'
 
     def take_manual_turn(self, player):
 
         # TODO: Ask the user for a row, col until a valid response
         #  is given them place the player's icon in the right spot
-        Valid = False
-        while Valid == False:
-            print("please enter a valid move")
-            row = input("what row do you want to play")
-            col = input("what column do you want to play")
-            if self.is_valid_move(row, col):
-                Valid = True
-        self.place_player(player,row, col)
+        while (True):
+            try:
+                rowInput = int(input("What row to place: "))
+                colInput = int(input("What column to place: "))
+                if (self.is_valid_move(rowInput, colInput)):
+                    if (player == 0):
+                        self.place_player(0, rowInput, colInput)
+                    elif (player == 1):
+                        self.place_player(1, rowInput, colInput)
+                else:
+                    # manually throwing an error if space isnt empty, i know its lazy, im sorry
+                    self.board[100][100] == '-'
+            except IndexError:
+                print("this is not a valid response")
+                continue
+            except ValueError:
+                print("this is not a valid response")
+                continue
+            return
 
     def take_turn(self, player):
         # TODO: Simply call the take_manual_turn function
+        print()
+        print("Player 1, take your turn:")
         self.take_manual_turn(player)
-
 
     def check_col_win(self, player):
         # TODO: Check col win
@@ -143,13 +156,63 @@ class TicTacToe:
         # TODO: Check tie
         allEmpty = True
         for i in range(self.columns):
-            for i in range(self.columns):
-                if(self.board[i][t] == '-'):
+            for t in range(self.columns):
+                if (self.board[i][t] == '-'):
                     allEmpty = False
         if (allEmpty == True):
             return True
 
         return False
+
+    def minimax(self, player):
+
+        if self.check_win(1):
+            return (10, None, None)
+        if self.check_win(0):
+            return (-10, None, None)
+        if self.check_tie():
+            return (0, None, None)
+
+        if (player == 1):
+            max = -10
+            row = -1
+            col = -1
+            for i in range(self.columns):
+                for t in range(self.rows):
+                    if (self.is_valid_move(i, t)):
+                        self.place_player(1, i, t)
+                        score = self.minimax(0)[0]
+                        if (max < score):
+                            max = score
+                            row = i
+                            col = t
+                        self.place_player("-", i, t)
+            return (max, row, col)
+        if (player == 0):
+            min = 10
+            row = -1
+            col = -1
+            for i in range(self.columns):
+                for t in range(self.rows):
+                    if (self.is_valid_move(i, t)):
+                        self.place_player(0, i, t)
+                        score = self.minimax(1)[0]
+                        if (min > score):
+                            min = score
+                            row = i
+                            col = t
+                        self.place_player("-", i, t)
+            return (min, row, col)
+
+    def take_minimax_turn(self, player):
+        score, row, col = self.minimax(player)
+        print("row is " + str(row))
+        print("col is " + str(col))
+        if self.is_valid_move(row, col):
+            self.place_player(player, row, col)
+
+        else:
+            print("invalid")
 
     def play_game(self):
         # TODO: Play game
@@ -176,14 +239,3 @@ class TicTacToe:
         elif (self.check_win(1) == True):
             self.print_board()
             print("O wins!")
-
-    def take_random_turn(self, player):
-        randX = random.randrange(3)
-        randY = random.randrange(3)
-        keeptrying = True
-        while keeptrying==True:
-            print("random col = " + str(randX))
-            print("random row = " + str(randY))
-            if (self.is_valid_move(player, randX, randY) == True):
-                keeptrying = False;
-                self.place_player(player, randX, randY)
