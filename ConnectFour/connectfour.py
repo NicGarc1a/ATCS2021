@@ -17,9 +17,16 @@ class ConnectFour:
 
     def print_instructions(self):
         # TODO: Print the instructions to the game
-        print("")
+        print("Rules of Connect Four: You can play another player or an AI on an 8X8 board")
+        print("2)  to win, you must create a diagonal, horizontal, or vertical line of 4")
+        print("3) the game ends when either player wins")
 
     def print_board(self):
+        # TODO: Print the board
+        print("   0 1 2 3 4 5 6 7")
+        for t in range(self.columns):
+            print(str(t), end='  ')
+            print(*self.board[t])
 
 
     def is_valid_move(self, row, col):
