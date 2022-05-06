@@ -76,8 +76,56 @@ class ConnectFour:
         self.take_manual_turn(player)
 
     def check_col_win(self, player):
+        bstreak = 0
+        rstreak = 0
+        if (player == 0):
+            for i in range(self.columns):
+                for t in range(self.columns):
+                    if self.board[t][i] == 'B':
+                        bstreak = bstreak + 1
+                    else:
+                        bstreak = 0
+                if (bstreak == 4):
+                    print("Blue column win")
+                    return True
+        if (player == 1):
+            for i in range(self.columns):
+                for t in range(self.columns):
+                    if self.board[t][i] == 'R':
+                        rstreak = rstreak + 1
+                    else:
+                        rstreak = 0
+                if (rstreak == 4):
+                    print("Red column win")
+                    return True
+
+        return False
 
     def check_row_win(self, player):
+        bstreak = 0
+        rstreak = 0
+        if (player == 0):
+            for i in range(self.columns):
+                for t in range(self.columns):
+                    if self.board[i][t] == 'B':
+                        bstreak = bstreak + 1
+                    else:
+                        bstreak = 0
+                if (bstreak == 4):
+                    print("Blue row win")
+                    return True
+        if (player == 1):
+            for i in range(self.columns):
+                for t in range(self.columns):
+                    if self.board[t][i] == 'R':
+                        rstreak = rstreak + 1
+                    else:
+                        rstreak = 0
+                if (rstreak == 4):
+                    print("Red row win")
+                    return True
+
+        return False
 
     def check_diag_win(self, player):
 
