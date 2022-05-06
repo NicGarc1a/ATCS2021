@@ -117,7 +117,7 @@ class ConnectFour:
         if (player == 1):
             for i in range(self.columns):
                 for t in range(self.columns):
-                    if self.board[t][i] == 'R':
+                    if self.board[i][t] == 'R':
                         rstreak = rstreak + 1
                     else:
                         rstreak = 0
