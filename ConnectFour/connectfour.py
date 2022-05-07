@@ -18,6 +18,7 @@ class ConnectFour:
         print("Rules of Connect Four: You can play another player or an AI on an 8X8 board")
         print("2)  to win, you must create a diagonal, horizontal, or vertical line of 4")
         print("3) the game ends when either player wins")
+        print("")
 
     def print_board(self):
         print("   0 1 2 3 4 5 6 7")
@@ -50,11 +51,13 @@ class ConnectFour:
                 while(full == True):
                     colInput = int(input("What column to drop: "))
                     if (self.board[0][colInput] != '-'):
-                        print("That row is full go again")
+                        print("That column is full go again")
                     else:
                         full = False
-                for i in range(7,-1,-1):
-                    if (self.board[i][colInput] == '-'):
+                for i in range(8):
+                    if (self.board[7][colInput] == '-'):
+                        rowInput = 7
+                    elif (self.board[i][colInput] == '-'):
                         rowInput = i
                 if (player == 0):
                     self.place_player(0, rowInput, colInput)
@@ -71,9 +74,15 @@ class ConnectFour:
 
 
     def take_turn(self, player):
-        print()
-        print("Player 1, take your turn:")
-        self.take_manual_turn(player)
+        if player ==0:
+            print()
+            print("Player 1 (Blue), take your turn:")
+            self.take_manual_turn(player)
+        elif player == 1:
+            print()
+            print("Player 2 (Red), take your turn:")
+            self.take_manual_turn(player)
+
 
     def check_col_win(self, player):
         bstreak = 0
@@ -87,7 +96,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                 if (bstreak == 4):
-                    print("Blue column win")
                     return True
         if (player == 1):
             for i in range(self.columns):
@@ -98,7 +106,6 @@ class ConnectFour:
                     else:
                         rstreak = 0
                 if (rstreak == 4):
-                    print("Red column win")
                     return True
 
         return False
@@ -115,7 +122,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                 if (bstreak == 4):
-                    print("Blue row win")
                     return True
         if (player == 1):
             for i in range(self.columns):
@@ -126,7 +132,6 @@ class ConnectFour:
                     else:
                         rstreak = 0
                 if (rstreak == 4):
-                    print("Red row win")
                     return True
 
         return False
@@ -144,7 +149,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                     if bstreak == 4:
-                        print("Blue wins diagonally")
                         return True
                     startrow = startrow + 1
                     startcol = startcol -1
@@ -158,7 +162,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                     if bstreak == 4:
-                        print("Blue wins diagonally")
                         return True
                     startrow = startrow + 1
                     startcol = startcol -1
@@ -172,7 +175,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                     if bstreak == 4:
-                        print("Blue wins diagonally")
                         return True
                     startrow = startrow - 1
                     startcol = startcol - 1
@@ -186,7 +188,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                     if bstreak == 4:
-                        print("Blue wins diagonally")
                         return True
                     startrow = startrow - 1
                     startcol = startcol - 1
@@ -201,7 +202,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                     if bstreak == 4:
-                        print("Red wins diagonally")
                         return True
                     startrow = startrow + 1
                     startcol = startcol -1
@@ -215,7 +215,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                     if bstreak == 4:
-                        print("Red wins diagonally")
                         return True
                     startrow = startrow + 1
                     startcol = startcol -1
@@ -229,7 +228,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                     if bstreak == 4:
-                        print("Red wins diagonally")
                         return True
                     startrow = startrow - 1
                     startcol = startcol - 1
@@ -243,7 +241,6 @@ class ConnectFour:
                     else:
                         bstreak = 0
                     if bstreak == 4:
-                        print("Red wins diagonally")
                         return True
                     startrow = startrow - 1
                     startcol = startcol - 1
@@ -267,12 +264,125 @@ class ConnectFour:
             return True
         return False
 
-    def statemachine(self, player):
-
-    def take_statemachine_turn(self, player):
-
     def minimax(self, player, depth):
 
+        if self.check_win(1):
+            return (10, None, None)
+        if self.check_win(0):
+            return (-10, None, None)
+        if self.check_tie():
+            return (0, None, None)
+        if (depth == 0):
+            return (0, None, None)
+
+
+        if (player == 1):
+            max = -10
+            row = -1
+            col = -1
+
+            for t in range(self.rows):
+                for i in range(8):
+                    if (self.board[7][t] == '-'):
+                        rowInput = 7
+                    elif (self.board[i][t] == '-'):
+                        rowInput = i
+                if (self.is_valid_move(rowInput, t)):
+                    self.place_player(0, rowInput,t)
+                    score = -10
+                    score = self.minimax(0, depth - 1)[0]
+                    if (max < score):
+                        max = score
+                        row = rowInput
+                        col = t
+                    self.place_player("-", rowInput, t)
+            return (max, row, col)
+        if (player == 0):
+            min = 10
+            row = -1
+            col = -1
+
+            for t in range(self.rows):
+                for i in range(8):
+                    if (self.board[7][t] == '-'):
+                        rowInput = 7
+                    elif (self.board[i][t] == '-'):
+                        rowInput = i
+                if (self.is_valid_move(rowInput, t)):
+                    self.place_player(0, rowInput,t)
+                    score = 10
+                    score = self.minimax(1, depth - 1)[0]
+                    if (min > score):
+                        min = score
+                        row = rowInput
+                        col = t
+                    self.place_player("-", rowInput, t)
+            return (min, row, col)
+
+
+
     def take_minimax_turn(self, player, depth):
+        score, row, col = self.minimax(player, depth)
+        print("row is " + str(row))
+        print("col is " + str(col))
+        if self.is_valid_move(row, col):
+            self.place_player(player, row, col)
+
+        else:
+            print("invalid")
 
     def play_game(self):
+        playerTurn = 0
+        self.print_instructions()
+        gamemode = int(input("What game mode would you like to play (1 for  minimax, 2 for  multiplayer) "))
+
+        self.print_board()
+
+        if (gamemode == 1):
+
+            while (self.check_win(0) != True and self.check_win(1) != True):
+                playerTurn += 1
+                if (playerTurn % 2 == 1):
+                    self.take_turn(0)
+                    print("player 1 turn (Blue)")
+                elif (playerTurn % 2 == 0):
+                    self.take_minimax_turn(1, 5)
+                    print("player 2 turn (Red)")
+                self.print_board()
+                if (self.check_tie()):
+                    print("tie")
+                    break
+
+            if (self.check_win(0) == True):
+                self.print_board()
+                print("Blue wins!")
+
+
+            elif (self.check_win(1) == True):
+                self.print_board()
+                print("Red Minimax AI wins!")
+
+        elif(gamemode == 2):
+            while (self.check_win(0) != True and self.check_win(1) != True):
+                playerTurn += 1
+                if (playerTurn % 2 == 1):
+                    self.take_turn(0)
+                    print("player 1 turn (Blue)")
+                elif (playerTurn % 2 == 0):
+                    self.take_turn(1)
+                    print("player 2 turn (Red)")
+                self.print_board()
+                if (self.check_tie()):
+                    print("tie")
+                    break
+
+            if (self.check_win(0) == True):
+                self.print_board()
+                print("Blue wins!")
+
+
+            elif (self.check_win(1) == True):
+                self.print_board()
+                print("Red wins!")
+
+
