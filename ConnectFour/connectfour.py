@@ -80,6 +80,7 @@ class ConnectFour:
         rstreak = 0
         if (player == 0):
             for i in range(self.columns):
+                bstreak = 0
                 for t in range(self.columns):
                     if self.board[t][i] == 'B':
                         bstreak = bstreak + 1
@@ -90,6 +91,7 @@ class ConnectFour:
                     return True
         if (player == 1):
             for i in range(self.columns):
+                rstreak = 0
                 for t in range(self.columns):
                     if self.board[t][i] == 'R':
                         rstreak = rstreak + 1
@@ -106,6 +108,7 @@ class ConnectFour:
         rstreak = 0
         if (player == 0):
             for i in range(self.columns):
+                bstreak = 0
                 for t in range(self.columns):
                     if self.board[i][t] == 'B':
                         bstreak = bstreak + 1
@@ -116,6 +119,7 @@ class ConnectFour:
                     return True
         if (player == 1):
             for i in range(self.columns):
+                rstreak = 0
                 for t in range(self.columns):
                     if self.board[i][t] == 'R':
                         rstreak = rstreak + 1
@@ -129,6 +133,121 @@ class ConnectFour:
 
     def check_diag_win(self, player):
 
+        if (player == 0):
+            for col1 in range(3,8):
+                startcol = col1
+                startrow= 0
+                bstreak = 0
+                while startcol != -1:
+                    if self.board[startrow][startcol] == 'B':
+                        bstreak = bstreak +1
+                    else:
+                        bstreak = 0
+                    if bstreak == 4:
+                        print("Blue wins diagonally")
+                        return True
+                    startrow = startrow + 1
+                    startcol = startcol -1
+            for row1 in range(1,5):
+                startcol = 7
+                startrow = row1
+                bstreak = 0
+                while startrow != 8:
+                    if self.board[startrow][startcol] == 'B':
+                        bstreak = bstreak +1
+                    else:
+                        bstreak = 0
+                    if bstreak == 4:
+                        print("Blue wins diagonally")
+                        return True
+                    startrow = startrow + 1
+                    startcol = startcol -1
+            for col1 in range(3,8):
+                startcol = col1
+                startrow = 7
+                bstreak = 0
+                while startcol != -1:
+                    if self.board[startrow][startcol] == 'B':
+                        bstreak = bstreak +1
+                    else:
+                        bstreak = 0
+                    if bstreak == 4:
+                        print("Blue wins diagonally")
+                        return True
+                    startrow = startrow - 1
+                    startcol = startcol - 1
+            for row1 in range(3,7):
+                startcol = 7
+                startrow = row1
+                bstreak = 0
+                while startrow != -1:
+                    if self.board[startrow][startcol] == 'B':
+                        bstreak = bstreak +1
+                    else:
+                        bstreak = 0
+                    if bstreak == 4:
+                        print("Blue wins diagonally")
+                        return True
+                    startrow = startrow - 1
+                    startcol = startcol - 1
+        elif (player == 1):
+            for col1 in range(3,8):
+                startcol = col1
+                startrow= 0
+                bstreak = 0
+                while startcol != -1:
+                    if self.board[startrow][startcol] == 'R':
+                        bstreak = bstreak +1
+                    else:
+                        bstreak = 0
+                    if bstreak == 4:
+                        print("Red wins diagonally")
+                        return True
+                    startrow = startrow + 1
+                    startcol = startcol -1
+            for row1 in range(1,5):
+                startcol = 7
+                startrow = row1
+                bstreak = 0
+                while startrow != 8:
+                    if self.board[startrow][startcol] == 'R':
+                        bstreak = bstreak +1
+                    else:
+                        bstreak = 0
+                    if bstreak == 4:
+                        print("Red wins diagonally")
+                        return True
+                    startrow = startrow + 1
+                    startcol = startcol -1
+            for col1 in range(3,8):
+                startcol = col1
+                startrow = 7
+                bstreak = 0
+                while startcol != -1:
+                    if self.board[startrow][startcol] == 'R':
+                        bstreak = bstreak +1
+                    else:
+                        bstreak = 0
+                    if bstreak == 4:
+                        print("Red wins diagonally")
+                        return True
+                    startrow = startrow - 1
+                    startcol = startcol - 1
+            for row1 in range(3,7):
+                startcol = 7
+                startrow = row1
+                bstreak = 0
+                while startrow != -1:
+                    if self.board[startrow][startcol] == 'R':
+                        bstreak = bstreak +1
+                    else:
+                        bstreak = 0
+                    if bstreak == 4:
+                        print("Red wins diagonally")
+                        return True
+                    startrow = startrow - 1
+                    startcol = startcol - 1
+
     def check_win(self, player):
         # TODO: Check win
 
@@ -139,6 +258,14 @@ class ConnectFour:
 
 
     def check_tie(self):
+        nomoves = True
+        for i in range(self.columns):
+            for t in range(self.columns):
+                if (self.board[i][t] == '-'):
+                    nomoves = False
+        if (nomoves == True):
+            return True
+        return False
 
     def statemachine(self, player):
 
