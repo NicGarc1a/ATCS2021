@@ -121,7 +121,6 @@ class TicTacToe:
         return False
 
     def check_diag_win(self, player):
-        # TODO: Check diagonal win
         if (player == 0):
             winCondition = True
             for i in range(self.columns):
@@ -177,7 +176,7 @@ class TicTacToe:
 
 
         if (player == 1):
-            max = -10
+            max = -100
             row = -1
             col = -1
             for i in range(self.columns):
@@ -193,7 +192,7 @@ class TicTacToe:
                         self.place_player("-", i, t)
             return (max, row, col)
         if (player == 0):
-            min = 10
+            min = 100
             row = -1
             col = -1
             for i in range(self.columns):
