@@ -1,4 +1,5 @@
 from connectfour import *
+import pygame
 game = ConnectFour()
 game.print_board()
 

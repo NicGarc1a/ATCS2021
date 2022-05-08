@@ -1,4 +1,6 @@
 import random
+import sys
+import pygame
 
 
 class ConnectFour:
@@ -43,17 +45,11 @@ class ConnectFour:
         if (player == '-'):
             self.board[row][col] = '-'
 
-    def take_manual_turn(self, player):
+    def take_manual_turn(self, player, colInput):
 
         while (True):
             try:
                 full = True
-                while(full == True):
-                    colInput = int(input("What column to drop: "))
-                    if (self.board[0][colInput] != '-'):
-                        print("That column is full go again")
-                    else:
-                        full = False
                 for i in range(8):
                     if (self.board[7][colInput] == '-'):
                         rowInput = 7
@@ -74,14 +70,66 @@ class ConnectFour:
 
 
     def take_turn(self, player):
+        inputtime = True
         if player ==0:
             print()
             print("Player 1 (Blue), take your turn:")
-            self.take_manual_turn(player)
+            while (inputtime == True):
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_0:
+                            colInput = 0
+                            inputtime = False
+                        if event.key == pygame.K_1:
+                            colInput = 1
+                            inputtime = False
+                        if event.key == pygame.K_2:
+                            colInput = 2
+                            inputtime = False
+                        if event.key == pygame.K_3:
+                            colInput = 3
+                            inputtime = False
+                        if event.key == pygame.K_4:
+                            colInput = 4
+                            inputtime = False
+                        if event.key == pygame.K_5:
+                            colInput = 5
+                            inputtime = False
+                        if event.key == pygame.K_6:
+                            colInput = 6
+                            inputtime = False
+                        if event.key == pygame.K_7:
+                            colInput = 7
+                            inputtime = False
+            self.take_manual_turn(player, colInput)
         elif player == 1:
             print()
             print("Player 2 (Red), take your turn:")
-            self.take_manual_turn(player)
+            while (inputtime == True):
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_1:
+                            colInput = 1
+                            inputtime = False
+                        if event.key == pygame.K_2:
+                            colInput = 2
+                            inputtime = False
+                        if event.key == pygame.K_RETURN:
+                            colInput = 3
+                            input = False
+                        if event.key == pygame.K_4:
+                            colInput = 4
+                            inputtime = False
+                        if event.key == pygame.K_5:
+                            colInput = 5
+                            inputtime = False
+                        if event.key == pygame.K_6:
+                            colInput = 6
+                            input = False
+                        if event.key == pygame.K_7:
+                            colInput = 6
+                            input = False
+            self.take_manual_turn(player, colInput)
 
 
     def check_col_win(self, player):
@@ -361,6 +409,7 @@ class ConnectFour:
 
 
     def minimax(self, player, depth, alpha, beta):
+        rowInput = 0
 
         if self.check_win(1):
             return (10, None, None)
@@ -429,13 +478,85 @@ class ConnectFour:
 
         else:
             print("invalid")
+    def draw_board(self, state,display):
+        pygame.display.update()
+        if (state == "welcome"):
+            welcomeimage = pygame.image.load("Welcome.png").convert()
+            welcomeimage =pygame.transform.smoothscale(welcomeimage, (500,500))
+            display.blit(welcomeimage, (0,0))
+            pygame.display.update()
+
+        if(state == "game"):
+            boardimage = pygame.image.load("game.png").convert()
+            boardimage =pygame.transform.smoothscale(boardimage, (500,500))
+            display.blit(boardimage, (0,0))
+            for col in range(self.columns):
+                xcoord = 16 + (col*60)
+                for row in range(self.rows):
+                    ycoord = 43 + (row*56)
+                    if(self.board[row][col]=="R"):
+                        redpiece = pygame.image.load("redpiece.png")
+                        redpiece = pygame.transform.smoothscale(redpiece, (47, 47))
+                        display.blit(redpiece, (xcoord, ycoord))
+
+                    elif (self.board[row][col] == "B"):
+                        bluepiece = pygame.image.load("bluetoken.png")
+                        bluepiece = pygame.transform.smoothscale(bluepiece, (47, 47))
+                        display.blit(bluepiece, (xcoord, ycoord))
+            pygame.display.update()
+
+        elif (state == "menu"):
+            menuimage = pygame.image.load("Menu.png").convert()
+            menuimage = pygame.transform.smoothscale(menuimage, (500, 500))
+            display.blit(menuimage, (0, 0))
+            pygame.display.update()
+
+
+        elif (state == "redwin"):
+            redwinimage = pygame.image.load("redwin.png").convert()
+            redwinimage = pygame.transform.smoothscale(redwinimage, (500, 500))
+            display.blit(redwinimage, (0, 0))
+            pygame.display.update()
+
+        elif (state == "bluewin"):
+            bluewinimage = pygame.image.load("bluewin.png").convert()
+            bluewinimage = pygame.transform.smoothscale(bluewinimage, (500, 500))
+            display.blit(bluewinimage, (0, 0))
+            pygame.display.update()
+
 
     def play_game(self):
+        pygame.display.init()
+        display = pygame.display.set_mode((500,500))
         playerTurn = 0
         self.print_instructions()
-        gamemode = int(input("What game mode would you like to play (1 for state machine, 2 for  multiplayer, 3 for minimax) "))
+        self.draw_board("welcome",display)
+        welcome = 0
+        while welcome != 2:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        welcome =2
+                        break
 
+        self.draw_board("menu",display)
+        gamemode = 0
+        while gamemode == 0:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_1:
+                        gamemode = 1
+                        break
+                    if event.key == pygame.K_2:
+                        gamemode = 2
+                        break
+                    if event.key == pygame.K_3:
+                        gamemode = 3
+                        break
+        self.draw_board("game",display)
         self.print_board()
+        redwin = False
+        bluewin = False
 
         if (gamemode == 3):
 
@@ -448,18 +569,25 @@ class ConnectFour:
                     self.take_minimax_turn(1, 5, -1000, 1000)
                     print("player 2 turn (Red)")
                 self.print_board()
+                self.draw_board("game", display)
                 if (self.check_tie()):
                     print("tie")
                     break
 
             if (self.check_win(0) == True):
+                self.draw_board("bluewin", display)
                 self.print_board()
                 print("Blue wins!")
+                bluewin = True
+
 
 
             elif (self.check_win(1) == True):
+                self.draw_board("redwin", display)
                 self.print_board()
                 print("Red Minimax AI wins!")
+                redwin = True
+
 
         elif(gamemode == 2):
             while (self.check_win(0) != True and self.check_win(1) != True):
@@ -471,18 +599,26 @@ class ConnectFour:
                     self.take_turn(1)
                     print("player 2 turn (Red)")
                 self.print_board()
+                self.draw_board("game",display)
                 if (self.check_tie()):
                     print("tie")
                     break
 
             if (self.check_win(0) == True):
                 self.print_board()
+                self.draw_board("bluewin",display)
+
                 print("Blue wins!")
+                bluewin = True
+
 
 
             elif (self.check_win(1) == True):
                 self.print_board()
+                self.draw_board("redwin",display)
                 print("Red wins!")
+                redwin = True
+
         elif(gamemode == 1):
             while (self.check_win(0) != True and self.check_win(1) != True):
                 playerTurn += 1
@@ -493,15 +629,26 @@ class ConnectFour:
                     self.take_statemachine_turn(1)
                     print("player 2 turn (Red)")
                 self.print_board()
+                self.draw_board("game",display)
                 if (self.check_tie()):
                     print("tie")
                     break
 
             if (self.check_win(0) == True):
                 self.print_board()
+                self.draw_board("bluewin",display)
                 print("Blue wins!")
+                bluewin = True
+
+
 
 
             elif (self.check_win(1) == True):
                 self.print_board()
+                self.draw_board("redwin",display)
                 print("Red wins!")
+                redwin = True
+        while (bluewin == True):
+            self.draw_board("bluewin", display)
+        while (redwin == True):
+            self.draw_board("redwin", display)
