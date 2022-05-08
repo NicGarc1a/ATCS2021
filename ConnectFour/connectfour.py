@@ -95,8 +95,8 @@ class ConnectFour:
                         bstreak = bstreak + 1
                     else:
                         bstreak = 0
-                if (bstreak == 4):
-                    return True
+                    if (bstreak == 4):
+                        return True
         if (player == 1):
             for i in range(self.columns):
                 rstreak = 0
@@ -105,8 +105,8 @@ class ConnectFour:
                         rstreak = rstreak + 1
                     else:
                         rstreak = 0
-                if (rstreak == 4):
-                    return True
+                    if (rstreak == 4):
+                        return True
 
         return False
 
@@ -114,15 +114,15 @@ class ConnectFour:
         bstreak = 0
         rstreak = 0
         if (player == 0):
-            for i in range(self.columns):
+            for i in range(8):
                 bstreak = 0
-                for t in range(self.columns):
+                for t in range(8):
                     if self.board[i][t] == 'B':
                         bstreak = bstreak + 1
                     else:
                         bstreak = 0
-                if (bstreak == 4):
-                    return True
+                    if (bstreak == 4):
+                        return True
         if (player == 1):
             for i in range(self.columns):
                 rstreak = 0
@@ -131,8 +131,8 @@ class ConnectFour:
                         rstreak = rstreak + 1
                     else:
                         rstreak = 0
-                if (rstreak == 4):
-                    return True
+                    if (rstreak == 4):
+                        return True
 
         return False
 
@@ -246,7 +246,6 @@ class ConnectFour:
                     startcol = startcol - 1
 
     def check_win(self, player):
-        # TODO: Check win
 
         if(self.check_col_win(player) == True or self.check_row_win(player) == True or self.check_diag_win(player) == True):
             return True
