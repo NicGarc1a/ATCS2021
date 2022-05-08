@@ -264,6 +264,103 @@ class ConnectFour:
             return True
         return False
 
+    def statemachine(self, player):
+        rowInput = 0
+        # STATE: OFFENSE (if there is a winnable move it will be played)
+        for col in range(8):
+            for i in range(8):
+                if (self.board[7][col] == '-'):
+                    rowInput = 7
+                elif (self.board[i][col] == '-'):
+                    rowInput = i
+            if (self.is_valid_move(rowInput, col)):
+                self.place_player(player, rowInput, col)
+                if (self.check_win(player)):
+                    self.place_player('-', rowInput, col)
+                    return (rowInput, col)
+                self.place_player('-', rowInput, col)
+        # STATE: DEFENSE (if there is a winnable move for the other player it will be played)
+        for col in range(8):
+            for i in range(8):
+                if (self.board[7][col] == '-'):
+                    rowInput = 7
+                elif (self.board[i][col] == '-'):
+                    rowInput = i
+            if (self.is_valid_move(rowInput, col)):
+                self.place_player(0, rowInput, col)
+                if (self.check_win(0)):
+                    self.place_player('-', rowInput, col)
+                    return (rowInput, col)
+                self.place_player('-', rowInput, col)
+         # STATE : FIRST MOVE
+
+        bottomemptystreak = 0
+        opponentfirstmovecol = 0
+        for i in range(8):
+            if (self.board[7][i] == '-'):
+                bottomemptystreak = bottomemptystreak + 1
+            else:
+                opponentfirstmovecol = i
+
+        if bottomemptystreak ==7:
+            return (7, opponentfirstmovecol-1)
+
+        # STATE: STREAKMAKER (if no one will win in 1 move, the AI will place wherever will have the most immediately connected pieces)
+        recordstreak = 0
+        streakrow = 0
+        streakcol = 0
+
+        for col in range(8):
+            streak = 0
+
+            for i in range(8):
+                if (self.board[7][col] == '-'):
+                    rowInput = 7
+                elif (self.board[i][col] == '-'):
+                    rowInput = i
+            # check the diagonal streak of a point
+            if (rowInput!= 0 and col != 7 ):
+                if (self.board[rowInput-1][col+1] == 'R'):
+                    streak = streak + 1
+            if (rowInput!= 7 and col != 0 ):
+                if (self.board[rowInput+1][col-1] == 'R'):
+                    streak = streak + 1
+            # check the horizontal streak of a point
+            if (col!= 7):
+                if (self.board[rowInput][col+1] == 'R'):
+                    streak = streak + 1
+            if (col !=0):
+                if (self.board[rowInput][col-1] == 'R'):
+                    streak = streak + 1
+
+
+            # check the vertical streak of a point
+            if (rowInput!= 7):
+                if (self.board[rowInput+1][col] == 'R'):
+                    streak = streak + 1
+
+            if streak >= recordstreak:
+                recordstreak = streak
+                streakrow = rowInput
+                streakcol = col
+        return (streakrow, streakcol)
+
+
+
+
+
+
+    def take_statemachine_turn(self, player):
+        row, col = self.statemachine(player)
+        print("row is " + str(row))
+        print("col is " + str(col))
+        if self.is_valid_move(row, col):
+            self.place_player(player, row, col)
+
+        else:
+            print("invalid")
+
+
     def minimax(self, player, depth, alpha, beta):
 
         if self.check_win(1):
@@ -337,11 +434,11 @@ class ConnectFour:
     def play_game(self):
         playerTurn = 0
         self.print_instructions()
-        gamemode = int(input("What game mode would you like to play (1 for  minimax, 2 for  multiplayer) "))
+        gamemode = int(input("What game mode would you like to play (1 for state machine, 2 for  multiplayer, 3 for minimax) "))
 
         self.print_board()
 
-        if (gamemode == 1):
+        if (gamemode == 3):
 
             while (self.check_win(0) != True and self.check_win(1) != True):
                 playerTurn += 1
@@ -373,6 +470,28 @@ class ConnectFour:
                     print("player 1 turn (Blue)")
                 elif (playerTurn % 2 == 0):
                     self.take_turn(1)
+                    print("player 2 turn (Red)")
+                self.print_board()
+                if (self.check_tie()):
+                    print("tie")
+                    break
+
+            if (self.check_win(0) == True):
+                self.print_board()
+                print("Blue wins!")
+
+
+            elif (self.check_win(1) == True):
+                self.print_board()
+                print("Red wins!")
+        elif(gamemode == 1):
+            while (self.check_win(0) != True and self.check_win(1) != True):
+                playerTurn += 1
+                if (playerTurn % 2 == 1):
+                    self.take_turn(0)
+                    print("player 1 turn (Blue)")
+                elif (playerTurn % 2 == 0):
+                    self.take_statemachine_turn(1)
                     print("player 2 turn (Red)")
                 self.print_board()
                 if (self.check_tie()):
