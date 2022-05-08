@@ -1,7 +1,4 @@
 import random
-import math
-import sys
-
 
 
 class ConnectFour:
@@ -9,7 +6,6 @@ class ConnectFour:
         self.board = []
         self.columns = 8
         self.rows = 8
-        self.boardcopy = []
 
         for i in range(self.columns):
             row = []
@@ -17,7 +13,6 @@ class ConnectFour:
                 dash = "-"
                 row.append(dash.strip())
             self.board.append(row)
-            self.boardcopy.append(row)
 
     def print_instructions(self):
         print("Rules of Connect Four: You can play another player or an AI on an 8X8 board")
@@ -37,16 +32,16 @@ class ConnectFour:
             return True
         return False
 
-    def place_player(self, board1, player, row, col):
+    def place_player(self, player, row, col):
 
         if (player == 0):
-            board1[row][col] = 'B'
+            self.board[row][col] = 'B'
 
         if (player == 1):
-            board1[row][col] = 'R'
+            self.board[row][col] = 'R'
 
         if (player == '-'):
-            board1[row][col] = '-'
+            self.board[row][col] = '-'
 
     def take_manual_turn(self, player):
 
@@ -65,9 +60,9 @@ class ConnectFour:
                     elif (self.board[i][colInput] == '-'):
                         rowInput = i
                 if (player == 0):
-                    self.place_player(self.board, 0, rowInput, colInput)
+                    self.place_player(0, rowInput, colInput)
                 elif (player == 1):
-                    self.place_player(self.board,1, rowInput, colInput)
+                    self.place_player(1, rowInput, colInput)
 
             except IndexError:
                 print("this is not a valid response")
@@ -269,120 +264,68 @@ class ConnectFour:
             return True
         return False
 
-    def minimax2(self, board1, player, depth, alpha, beta):
-        if(player == 1):
-            max = -1000000
-            column = random.randint(0, 8)
-            row = 0
-            rowInput = 0
-            for t in range(8):
+    def minimax(self, player, depth, alpha, beta):
+
+        if self.check_win(1):
+            return (10, None, None)
+        if self.check_win(0):
+            return (-10, None, None)
+        if self.check_tie():
+            return (0, None, None)
+        if (depth == 0):
+            return (0, None, None)
+
+
+        if (player == 1):
+            maximum = -100
+            row = -1
+            col = -1
+
+            for t in range(self.rows):
                 for i in range(8):
                     if (self.board[7][t] == '-'):
                         rowInput = 7
                     elif (self.board[i][t] == '-'):
                         rowInput = i
                 if (self.is_valid_move(rowInput, t)):
-                    boardcopy = board1.copy()
-                    self.place_player(boardcopy, 0, rowInput, t)
-                    score = self.minimax2(boardcopy, 0, depth - 1, alpha, beta)[0]
-                    if score > max:
-                        max = score
-                        column = t
+                    self.place_player(1, rowInput,t)
+                    score = self.minimax(0, depth - 1, alpha, beta)[0]
+                    alpha = max(alpha, score)
+                    if (maximum < score):
+                        maximum = score
                         row = rowInput
-                    if alpha > max:
-                        alpha = alpha
-                    else:
-                        alpha = max
-                    if alpha >= beta:
-                        break
-            return (max, row, column)
-        else:
-            min = 100000
-            column = random.randint(0,8)
-            row = 0
-            rowInput = 0
-            for t in range(8):
+                        col = t
+                    self.place_player("-", rowInput, t)
+                    if (alpha >= beta):
+                        return (maximum, row, col)
+            return (maximum, row, col)
+        if (player == 0):
+            minimum = 100
+            row = -1
+            col = -1
+
+            for t in range(self.rows):
                 for i in range(8):
                     if (self.board[7][t] == '-'):
                         rowInput = 7
                     elif (self.board[i][t] == '-'):
                         rowInput = i
                 if (self.is_valid_move(rowInput, t)):
-                    boardcopy = board1.copy()
-                    self.place_player(boardcopy, 1, rowInput, t)
-                    score = self.minimax2(boardcopy, 1, depth - 1, alpha, beta)[0]
-                    if score < min:
-                        min = score
+                    self.place_player(0, rowInput,t)
+                    score = self.minimax(1, depth - 1, alpha, beta)[0]
+                    beta = min(beta, score)
+                    if (minimum > score):
+                        minimum = score
                         row = rowInput
-                        column = t
-                    if beta < min:
-                        beta = beta
-                    else:
-                        beta = min
-                    if alpha>= beta:
-                        break
-            return (min, row, column)
+                        col = t
+                    self.place_player("-", rowInput, t)
+                    if (alpha >= beta):
+                       return (minimum, row, col)
+            return (minimum, row, col)
 
-    # def minimax(self, player, depth):
-    #
-    #     if self.check_win(1):
-    #         return (10, None, None)
-    #     if self.check_win(0):
-    #         return (-10, None, None)
-    #     if self.check_tie():
-    #         return (0, None, None)
-    #     if (depth == 0):
-    #         return (0, None, None)
-    #
-    #
-    #     if (player == 1):
-    #         max = -100
-    #         row = -1
-    #         col = -1
-    #         rowInput = 0
-    #
-    #         for t in range(8):
-    #             for i in range(8):
-    #                 if (self.board[7][t] == '-'):
-    #                     rowInput = 7
-    #                 elif (self.board[i][t] == '-'):
-    #                     rowInput = i
-    #             if (self.is_valid_move(rowInput, t)):
-    #                 self.place_player(1, rowInput,t)
-    #                 score = -10
-    #                 score = self.minimax(0, depth - 1)[0]
-    #                 if (max < score):
-    #                     max = score
-    #                     row = rowInput
-    #                     col = t
-    #                 self.place_player("-", rowInput, t)
-    #         return (max, row, col)
-    #     if (player == 0):
-    #         min = 100
-    #         row = -1
-    #         col = -1
-    #
-    #         for t in range(8):
-    #             for i in range(8):
-    #                 if (self.board[7][t] == '-'):
-    #                     rowInput = 7
-    #                 elif (self.board[i][t] == '-'):
-    #                     rowInput = i
-    #             if (self.is_valid_move(rowInput, t)):
-    #                 self.place_player(0, rowInput,t)
-    #                 score = 10
-    #                 score = self.minimax(1, depth - 1)[0]
-    #                 if (min > score):
-    #                     min = score
-    #                     row = rowInput
-    #                     col = t
-    #                 self.place_player("-", rowInput, t)
-    #         return (min, row, col)
-    #
-    #
 
-    def take_minimax_turn(self, player, depth):
-        score, row, col = self.minimax2(self.board,player, depth, -100000, 100000)
+    def take_minimax_turn(self, player, depth, alpha, beta):
+        score, row, col = self.minimax(player, depth, alpha, beta)
         print("row is " + str(row))
         print("col is " + str(col))
         if self.is_valid_move(row, col):
@@ -406,7 +349,7 @@ class ConnectFour:
                     self.take_turn(0)
                     print("player 1 turn (Blue)")
                 elif (playerTurn % 2 == 0):
-                    self.take_minimax_turn(1, 5)
+                    self.take_minimax_turn(1, 5, -1000, 1000)
                     print("player 2 turn (Red)")
                 self.print_board()
                 if (self.check_tie()):
@@ -444,5 +387,3 @@ class ConnectFour:
             elif (self.check_win(1) == True):
                 self.print_board()
                 print("Red wins!")
-
-
