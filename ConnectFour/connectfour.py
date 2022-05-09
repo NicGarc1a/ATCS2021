@@ -532,6 +532,12 @@ class ConnectFour:
 
 
     def play_game(self):
+        pygame.init()
+        menusound = pygame.mixer.Sound("menu.wav")
+        winwound =pygame.mixer.Sound("win.wav")
+        placepiecesound = pygame.mixer.Sound("beep.wav")
+        musicsound = pygame.mixer.music.load("backgroundmusic.wav")
+        pygame.mixer.music.play(-1)
         pygame.display.init()
         display = pygame.display.set_mode((500,500)) #makes a 500 by 500  display
         playerTurn = 0
@@ -543,6 +549,7 @@ class ConnectFour:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         welcome =2
+                        menusound.play()
                         break
 
         self.draw_board("menu",display)
@@ -550,6 +557,7 @@ class ConnectFour:
         while gamemode == 0:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
+                    menusound.play()
                     if event.key == pygame.K_1:
                         gamemode = 1
                         break
@@ -570,9 +578,10 @@ class ConnectFour:
                 playerTurn += 1
                 if (playerTurn % 2 == 1):
                     self.take_turn(0)
+                    placepiecesound.play()
                     print("player 1 turn (Blue)")
                 elif (playerTurn % 2 == 0):
-                    self.take_minimax_turn(1, 5, -1000, 1000)
+                    self.take_minimax_turn(1, 6, -1000, 1000)
                     print("player 2 turn (Red)")
                 self.print_board()
                 self.draw_board("game", display)
@@ -585,6 +594,8 @@ class ConnectFour:
                 self.print_board()
                 print("Blue wins!")
                 bluewin = True
+                winwound.play()
+
 
 
 
@@ -593,6 +604,8 @@ class ConnectFour:
                 self.print_board()
                 print("Red Minimax AI wins!")
                 redwin = True
+                winwound.play()
+
 
 
         elif(gamemode == 2): # player vs player
@@ -600,9 +613,11 @@ class ConnectFour:
                 playerTurn += 1
                 if (playerTurn % 2 == 1):
                     self.take_turn(0)
+                    placepiecesound.play()
                     print("player 1 turn (Blue)")
                 elif (playerTurn % 2 == 0):
                     self.take_turn(1)
+                    placepiecesound.play()
                     print("player 2 turn (Red)")
                 self.print_board()
                 self.draw_board("game",display)
@@ -616,6 +631,8 @@ class ConnectFour:
 
                 print("Blue wins!")
                 bluewin = True
+                winwound.play()
+
 
 
 
@@ -624,12 +641,16 @@ class ConnectFour:
                 self.draw_board("redwin",display)
                 print("Red wins!")
                 redwin = True
+                winwound.play()
+
 
         elif(gamemode == 1): # player vs statemachine
             while (self.check_win(0) != True and self.check_win(1) != True):
                 playerTurn += 1
                 if (playerTurn % 2 == 1):
                     self.take_turn(0)
+                    placepiecesound.play()
+
                     print("player 1 turn (Blue)")
                 elif (playerTurn % 2 == 0):
                     self.take_statemachine_turn(1)
@@ -645,6 +666,8 @@ class ConnectFour:
                 self.draw_board("bluewin",display)
                 print("Blue wins!")
                 bluewin = True
+                winwound.play()
+
 
 
 
@@ -654,6 +677,8 @@ class ConnectFour:
                 self.draw_board("redwin",display)
                 print("Red wins!")
                 redwin = True
+                winwound.play()
+
         while (bluewin == True):
             self.draw_board("bluewin", display)
         while (redwin == True):
