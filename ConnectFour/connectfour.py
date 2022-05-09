@@ -1,6 +1,11 @@
 import random
 import sys
 import pygame
+# Programmer: Nic Garcia
+# Date:May 8
+# Sources:
+# https://github.com/KeithGalli/Connect4-Python  (conceptually helped me structure my minimax algorithm)
+
 
 
 class ConnectFour:
@@ -112,15 +117,18 @@ class ConnectFour:
             while (inputtime == True):
                 for event in pygame.event.get():
                     if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_0:
+                            colInput = 0
+                            inputtime = False
                         if event.key == pygame.K_1:
                             colInput = 1
                             inputtime = False
                         if event.key == pygame.K_2:
                             colInput = 2
                             inputtime = False
-                        if event.key == pygame.K_RETURN:
+                        if event.key == pygame.K_3:
                             colInput = 3
-                            input = False
+                            inputtime = False
                         if event.key == pygame.K_4:
                             colInput = 4
                             inputtime = False
@@ -129,10 +137,10 @@ class ConnectFour:
                             inputtime = False
                         if event.key == pygame.K_6:
                             colInput = 6
-                            input = False
+                            inputtime = False
                         if event.key == pygame.K_7:
-                            colInput = 6
-                            input = False
+                            colInput = 7
+                            inputtime = False
             self.take_manual_turn(player, colInput)
 
     # checks for a column streak
