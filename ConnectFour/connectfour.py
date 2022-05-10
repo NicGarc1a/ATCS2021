@@ -544,7 +544,7 @@ class ConnectFour:
         menusound = pygame.mixer.Sound("menu.wav")
         winwound =pygame.mixer.Sound("win.wav")
         placepiecesound = pygame.mixer.Sound("beep.wav")
-        musicsound = pygame.mixer.music.load("backgroundmusic.wav")
+        musicsound = pygame.mixer.music.load("backgroundmusic.mp3")
         pygame.mixer.music.play(-1)
         pygame.display.init()
         display = pygame.display.set_mode((500,500)) #makes a 500 by 500  display
@@ -589,7 +589,7 @@ class ConnectFour:
                     placepiecesound.play()
                     print("player 1 turn (Blue)")
                 elif (playerTurn % 2 == 0):
-                    self.take_minimax_turn(1, 6, -1000, 1000)
+                    self.take_minimax_turn(1, 9, -1000, 1000)
                     print("player 2 turn (Red)")
                 self.print_board()
                 self.draw_board("game", display)
